@@ -1,0 +1,73 @@
+# DNS Defender AI - full stack: dnsmasq resolver + FastAPI/ML backend + PostgreSQL + dashboard.
+#   cp .env.example .env   (set POSTGRES_PASSWORD)   then:   docker compose up -d --build
+services:
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dnsdefender}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env (see .env.example)}
+      POSTGRES_DB: ${POSTGRES_DB:-dns_defender}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dns-resolver:
+    build: ./dns-resolver
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "dig +time=2 +tries=1 +short @127.0.0.1 health.check.local | grep -q '^127.0.0.1$' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    ports:
+      - "${DNS_BIND_IP:-0.0.0.0}:${DNS_PORT:-53}:53/udp"
+      - "${DNS_BIND_IP:-0.0.0.0}:${DNS_PORT:-53}:53/tcp"
+    environment:
+      DNS_UPSTREAM_SERVERS: ${DNS_UPSTREAM_SERVERS:-1.1.1.1,8.8.8.8}
+    volumes:
+      - dns_logs:/var/log/dnsmasq
+      - dns_rules:/rules
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      dns-resolver:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-dnsdefender}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dns_defender}
+      CAPTURE_MODE: dnsmasq
+      DNSMASQ_LOG_PATH: /var/log/dnsmasq/queries.log
+      DNS_BLOCKLIST_PATH: /rules/blocked.conf
+      API_KEY: ${API_KEY:-}
+      ALERT_ONLY_MODE: ${ALERT_ONLY_MODE:-true}
+      AUTO_BLOCK_CONFIRMED: ${AUTO_BLOCK_CONFIRMED:-false}
+      RETENTION_DAYS: ${RETENTION_DAYS:-7}
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+      NVIDIA_MODEL: ${NVIDIA_MODEL:-meta/llama-3.1-70b-instruct}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+    volumes:
+      - dns_logs:/var/log/dnsmasq:ro
+      - dns_rules:/rules
+    ports:
+      - "${BACKEND_BIND:-127.0.0.1}:8000:8000"   # API docs at /docs; keep on localhost unless API_KEY is set
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${UI_PORT:-3000}:80"
+
+volumes:
+  pgdata:
+  dns_logs:
+  dns_rules:

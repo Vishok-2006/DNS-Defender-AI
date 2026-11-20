@@ -1,0 +1,183 @@
+{
+  "A_random_split_test": {
+    "at_0.5": {
+      "threshold": 0.5,
+      "accuracy": 0.9096,
+      "precision": 0.956,
+      "recall_tpr": 0.8589,
+      "f1": 0.9048,
+      "false_positive_rate": 0.0396,
+      "roc_auc": 0.9648,
+      "confusion_matrix": {
+        "tn": 48598,
+        "fp": 2003,
+        "fn": 7145,
+        "tp": 43480
+      },
+      "n": 101226
+    },
+    "at_malicious_threshold": {
+      "threshold": 0.7879,
+      "accuracy": 0.8869,
+      "precision": 0.9872,
+      "recall_tpr": 0.784,
+      "f1": 0.8739,
+      "false_positive_rate": 0.0102,
+      "roc_auc": 0.9648,
+      "confusion_matrix": {
+        "tn": 50086,
+        "fp": 515,
+        "fn": 10935,
+        "tp": 39690
+      },
+      "n": 101226
+    },
+    "at_suspicious_threshold": {
+      "threshold": 0.4528,
+      "accuracy": 0.9105,
+      "precision": 0.9462,
+      "recall_tpr": 0.8705,
+      "f1": 0.9068,
+      "false_positive_rate": 0.0495,
+      "roc_auc": 0.9648,
+      "confusion_matrix": {
+        "tn": 48097,
+        "fp": 2504,
+        "fn": 6554,
+        "tp": 44071
+      },
+      "n": 101226
+    }
+  },
+  "feature_importance": {
+    "sld_lm_mean": 0.3864,
+    "sld_lm_min": 0.1875,
+    "sld_length": 0.0732,
+    "sld_max_consonant_run": 0.0696,
+    "max_label_length": 0.0691,
+    "domain_length": 0.0525,
+    "sld_vowel_ratio": 0.0377,
+    "sld_entropy": 0.0335,
+    "sld_hyphen_ratio": 0.032,
+    "sld_digit_letter_switches": 0.0179,
+    "sld_unique_ratio": 0.0159,
+    "sld_digit_ratio": 0.011,
+    "sld_max_digit_run": 0.0108,
+    "subdomain_count": 0.0028
+  },
+  "B_unseen_families": {
+    "held_out_families": [
+      "gozi",
+      "suppobox",
+      "ramnit",
+      "pykspa",
+      "necurs",
+      "conficker"
+    ],
+    "at_malicious_threshold": {
+      "threshold": 0.7879,
+      "accuracy": 0.7212,
+      "precision": 0.9844,
+      "recall_tpr": 0.4968,
+      "f1": 0.6604,
+      "false_positive_rate": 0.0094,
+      "roc_auc": 0.7945,
+      "confusion_matrix": {
+        "tn": 66831,
+        "fp": 636,
+        "fn": 40759,
+        "tp": 40241
+      },
+      "n": 148467
+    },
+    "at_suspicious_threshold": {
+      "threshold": 0.4528,
+      "accuracy": 0.7514,
+      "precision": 0.9463,
+      "recall_tpr": 0.5771,
+      "f1": 0.7169,
+      "false_positive_rate": 0.0393,
+      "roc_auc": 0.7945,
+      "confusion_matrix": {
+        "tn": 64813,
+        "fp": 2654,
+        "fn": 34257,
+        "tp": 46743
+      },
+      "n": 148467
+    },
+    "recall_per_unseen_family_at_malicious_threshold": {
+      "gozi": 0.06,
+      "suppobox": 0.0006,
+      "ramnit": 0.9546,
+      "pykspa": 0.6765,
+      "necurs": 0.9124,
+      "conficker": 0.3767
+    }
+  },
+  "model": "RandomForestClassifier",
+  "params": {
+    "bootstrap": true,
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced",
+    "criterion": "gini",
+    "max_depth": 16,
+    "max_features": "sqrt",
+    "max_leaf_nodes": null,
+    "max_samples": null,
+    "min_impurity_decrease": 0.0,
+    "min_samples_leaf": 20,
+    "min_samples_split": 2,
+    "min_weight_fraction_leaf": 0.0,
+    "monotonic_cst": null,
+    "n_estimators": 100,
+    "n_jobs": -1,
+    "oob_score": false,
+    "random_state": 42,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "trained_at_utc": "2026-11-14T16:28:31+00:00",
+  "sklearn_version": "1.4.1.post1",
+  "quick_mode": false,
+  "thresholds": {
+    "suspicious": 0.4528,
+    "malicious": 0.7879
+  },
+  "features": [
+    "sld_length",
+    "sld_entropy",
+    "sld_digit_ratio",
+    "sld_hyphen_ratio",
+    "sld_vowel_ratio",
+    "sld_unique_ratio",
+    "sld_max_consonant_run",
+    "sld_max_digit_run",
+    "sld_digit_letter_switches",
+    "subdomain_count",
+    "max_label_length",
+    "domain_length",
+    "sld_lm_mean",
+    "sld_lm_min"
+  ],
+  "dataset": {
+    "name": "chrmor/DGA_domains_dataset",
+    "url": "https://github.com/chrmor/DGA_domains_dataset",
+    "citation": "Cucchiarelli et al. (2021), Expert Systems with Applications 170, 114551",
+    "rows_used": 674837,
+    "sha256": "e8bbe54f180cd127a07abaa3dbddcd843e7b7943dff2f18628619b1bd22e8253"
+  },
+  "model_file_mb": 17.86,
+  "limitations": [
+    "Lexical model: dictionary-word DGA families (e.g. gozi, suppobox) are barely detectable from the name alone.",
+    "Benign class is Alexa top sites; CDN/hash-like infrastructure names can look random and need the allowlist.",
+    "DNS tunnelling, beaconing and NXDOMAIN-burst detection are rule-based heuristics, not evaluated by this dataset."
+  ],
+  "C_5fold_cv": {
+    "roc_auc_mean": 0.9641,
+    "roc_auc_std": 0.0004,
+    "f1_mean": 0.9032,
+    "f1_std": 0.0005,
+    "folds": 5
+  }
+}

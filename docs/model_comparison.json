@@ -1,0 +1,43 @@
+{
+  "rows_used": 150000,
+  "test_rows": 22500,
+  "threshold": 0.5,
+  "results": {
+    "Logistic Regression": {
+      "accuracy": 0.8672,
+      "precision": 0.8998,
+      "recall": 0.8264,
+      "f1": 0.8616,
+      "roc_auc": 0.9292,
+      "fit_seconds": 0.4,
+      "single_row_latency_ms": 0.4
+    },
+    "Decision Tree": {
+      "accuracy": 0.8968,
+      "precision": 0.9393,
+      "recall": 0.8484,
+      "f1": 0.8915,
+      "roc_auc": 0.9525,
+      "fit_seconds": 1.2,
+      "single_row_latency_ms": 0.21
+    },
+    "Random Forest (chosen)": {
+      "accuracy": 0.9019,
+      "precision": 0.9543,
+      "recall": 0.8443,
+      "f1": 0.8959,
+      "roc_auc": 0.959,
+      "fit_seconds": 17.2,
+      "single_row_latency_ms": 1.81
+    },
+    "Gradient Boosting (HistGB)": {
+      "accuracy": 0.9104,
+      "precision": 0.9492,
+      "recall": 0.8673,
+      "f1": 0.9064,
+      "roc_auc": 0.9655,
+      "fit_seconds": 3.0,
+      "single_row_latency_ms": 1.19
+    }
+  }
+}
