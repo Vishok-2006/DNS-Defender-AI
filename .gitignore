@@ -9,3 +9,30 @@ ml-training/data/
 *.db
 *.db-wal
 *.db-shm
+venv/
+.venv/
+dist/
+build/
+.next/
+
+# Python
+*.pyc
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
